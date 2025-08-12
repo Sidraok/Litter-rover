@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autonomous Litter Rover: A Technical Overview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+        .flow-arrow {
+            font-size: 2rem;
+            line-height: 1;
+            color: #FF6B6B;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -0.6rem;
+            top: 0.5rem;
+            width: 1.2rem;
+            height: 1.2rem;
+            border-radius: 50%;
+            background-color: #4ECDC4;
+            border: 3px solid #F7FFF7;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-black text-[#1A535C]">Autonomous Litter Rover</h1>
+            <p class="text-xl md:text-2xl font-semibold text-[#4ECDC4] mt-2">A Low-Cost Solution for Automated Environmental Cleanup</p>
+        </header>
+
+        <main class="space-y-12">
+
+            <section id="problem" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-[#1A535C] mb-4 text-center">The Challenge: A Global Waste Crisis</h2>
+                <p class="text-lg text-center text-gray-600 max-w-3xl mx-auto mb-8">
+                    Manual litter collection is inefficient, expensive, and hazardous. The presence of litter encourages more littering, creating a vicious cycle. Autonomous robotics offers a persistent, safe, and cost-effective solution to clean our public spaces.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <div class="bg-[#F7FFF7] p-6 rounded-lg border-l-4 border-[#4ECDC4]">
+                        <p class="text-5xl font-extrabold text-[#1A535C]">75%</p>
+                        <p class="text-md font-semibold text-gray-700 mt-2">of people admit to littering, but the rate drops in clean environments.</p>
+                    </div>
+                    <div class="bg-[#F7FFF7] p-6 rounded-lg border-l-4 border-[#FF6B6B]">
+                        <p class="text-5xl font-extrabold text-[#1A535C]">>$11.5B</p>
+                        <p class="text-md font-semibold text-gray-700 mt-2">Annual cost of litter cleanup in the U.S. alone.</p>
+                    </div>
+                    <div class="bg-[#F7FFF7] p-6 rounded-lg border-l-4 border-[#FFE66D]">
+                        <p class="text-5xl font-extrabold text-[#1A535C]">24/7</p>
+                        <p class="text-md font-semibold text-gray-700 mt-2">Robots can operate continuously, unlike manual crews.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="architecture" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-[#1A535C] mb-6 text-center">System Architecture: The Perception-Action Loop</h2>
+                <p class="text-lg text-center text-gray-600 max-w-3xl mx-auto mb-8">
+                    The rover operates on a canonical robotic framework: it perceives the world, plans its next move, and then acts on that plan. This cycle repeats continuously, enabling autonomous behavior.
+                </p>
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8 text-center">
+                    <div class="flex flex-col items-center p-4 bg-gray-50 rounded-lg w-full md:w-1/4">
+                        <span class="text-4xl mb-2">👁️</span>
+                        <h3 class="text-xl font-bold text-[#1A535C]">1. Perception</h3>
+                        <p class="text-gray-600 mt-1">Webcam + YOLOv8 detect litter. Ultrasonic sensors spot obstacles.</p>
+                    </div>
+                    <div class="flow-arrow hidden md:block">&rarr;</div>
+                    <div class="flow-arrow block md:hidden">&darr;</div>
+                    <div class="flex flex-col items-center p-4 bg-gray-50 rounded-lg w-full md:w-1/4">
+                        <span class="text-4xl mb-2">🗺️</span>
+                        <h3 class="text-xl font-bold text-[#1A535C]">2. Navigation</h3>
+                        <p class="text-gray-600 mt-1">Wanders to explore the area. When trash is seen, A* plans the optimal path to it.</p>
+                    </div>
+                    <div class="flow-arrow hidden md:block">&rarr;</div>
+                    <div class="flow-arrow block md:hidden">&darr;</div>
+                    <div class="flex flex-col items-center p-4 bg-gray-50 rounded-lg w-full md:w-1/4">
+                        <span class="text-4xl mb-2">🦾</span>
+                        <h3 class="text-xl font-bold text-[#1A535C]">3. Manipulation</h3>
+                        <p class="text-gray-600 mt-1">A 2-DOF arm with a compliant gripper picks up and collects the trash.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="perception-performance" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-[#1A535C] mb-2 text-center">The Brains: Edge AI on Raspberry Pi 4</h2>
+                <p class="text-lg text-center text-gray-600 max-w-3xl mx-auto mb-8">
+                    The choice of a Raspberry Pi creates a "constraint cascade." The limited processing power forces a trade-off between the object detection model's accuracy and its speed, which directly impacts the rover's operational velocity.
+                </p>
+                <div class="chart-container">
+                    <canvas id="inferenceTimeChart"></canvas>
+                </div>
+                <p class="text-center text-gray-600 mt-4">
+                    This chart compares the inference time of different object detection models on a Raspberry Pi without a hardware accelerator. Lower is better. YOLOv8n offers a modern balance, but its speed (~1-2 FPS) limits the rover's physical speed, highlighting the need for optimization or a hardware accelerator like a Google Coral TPU.
+                </p>
+            </section>
+
+            <section id="gripper-design" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-[#1A535C] mb-6 text-center">Manipulation: Grasping Irregular Objects</h2>
+                <p class="text-lg text-center text-gray-600 max-w-3xl mx-auto mb-8">
+                    Litter comes in all shapes and sizes. A simple rigid pincer fails on many common items. A compliant, 3D-printed gripper design offers the best combination of versatility, robustness, and low cost.
+                </p>
+                <div class="chart-container">
+                     <canvas id="gripperComparisonChart"></canvas>
+                </div>
+                <p class="text-center text-gray-600 mt-4">
+                    A radar chart comparing low-cost gripper designs on key metrics for litter collection. The 3D-Printed Soft Gripper (like a Fin Ray) shows the most balanced profile, excelling in adaptability and cost-effectiveness, making it the ideal choice.
+                </p>
+            </section>
+
+            <section id="operational-logic" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-[#1A535C] mb-6 text-center">Operational Logic: From Patrol to Exploration</h2>
+                <p class="text-lg text-center text-gray-600 max-w-3xl mx-auto mb-8">
+                    Instead of following a rigid, predefined path, the rover can operate more intelligently by freely exploring its environment. This "free-roaming" approach is better for finding randomly scattered litter but requires a more robust reactive navigation system.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-center">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="text-xl font-bold text-[#FF6B6B] mb-3">Fixed Patrol Path</h3>
+                        <p class="text-gray-600 mb-4">Inefficient and predictable. Misses any trash outside its fixed route.</p>
+                        <div class="w-full h-40 bg-white border-2 border-dashed border-gray-300 grid grid-cols-4 gap-2 p-2 rounded-lg">
+                            <div class="bg-gray-200 rounded-sm"></div><div class="bg-gray-200 rounded-sm"></div><div class="bg-gray-200 rounded-sm"></div><div class="text-2xl">🗑️</div>
+                            <div class="bg-gray-200 rounded-sm"></div><div class="bg-gray-200 rounded-sm"></div><div class="bg-gray-200 rounded-sm"></div><div class="bg-gray-200 rounded-sm"></div>
+                            <div class="text-2xl">🤖</div><div class="bg-red-200 rounded-sm"></div><div class="bg-red-200 rounded-sm"></div><div class="bg-red-200 rounded-sm"></div>
+                            <div class="bg-gray-200 rounded-sm"></div><div class="bg-gray-200 rounded-sm"></div><div class="bg-gray-200 rounded-sm"></div><div class="text-2xl">🗑️</div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="text-xl font-bold text-[#4ECDC4] mb-3">Exploratory "Wander" Path</h3>
+                        <p class="text-gray-600 mb-4">Dynamic and efficient. The rover roams until it sees trash, then navigates directly to it.</p>
+                        <div class="w-full h-40 bg-white border-2 border-dashed border-gray-300 p-2 rounded-lg relative">
+                            <div class="absolute top-1/2 left-1/4 text-2xl">🤖</div>
+                            <div class="absolute top-1/4 right-1/4 text-2xl">🗑️</div>
+                            <div class="absolute bottom-1/4 left-1/3 text-2xl">🗑️</div>
+                             <svg class="absolute w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M 25,50 C 40,20 60,30 70,25" stroke="#4ECDC4" stroke-width="2" fill="none" stroke-dasharray="4 2"/></svg>
+                        </div>
+                    </div>
+                </div>
+                 <p class="text-center text-gray-600 mt-6">
+                    The logic is simple: wander the area using ultrasonic sensors to avoid walls. When the camera sees litter, the wander behavior is interrupted. The A* algorithm then computes an optimal, direct path to the target. After collection, the rover resumes its exploratory wandering.
+                </p>
+            </section>
+
+            <section id="cost-benefit" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-[#1A535C] mb-2 text-center">Cost-Benefit Analysis: The Economic Case</h2>
+                <p class="text-lg text-center text-gray-600 max-w-3xl mx-auto mb-8">
+                    The primary driver for automation is economic. A low-cost robotic prototype represents a capital expenditure that is vastly cheaper than the recurring operational cost of manual labor, promising a rapid return on investment.
+                </p>
+                <div class="chart-container" style="height: 250px;">
+                    <canvas id="costBenefitChart"></canvas>
+                </div>
+                <p class="text-center text-gray-600 mt-4">
+                    A single rover prototype can be built for less than one month's salary of a manual sanitation worker in India. A fleet of such rovers, operating 24/7, offers a compelling long-term economic advantage for municipalities and private campuses.
+                </p>
+            </section>
+
+            <section id="feasibility" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-[#1A535C] mb-6 text-center">Feasibility in India: A Reality Check</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-green-50 p-6 rounded-lg">
+                        <h3 class="text-2xl font-bold text-green-800 mb-4 text-center">Opportunities</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <span class="text-2xl mr-3">🇮🇳</span>
+                                <div>
+                                    <h4 class="font-bold text-lg">Swachh Bharat Alignment</h4>
+                                    <p class="text-gray-700">Directly supports the national "Clean India" mission by offering a modern, technological solution to waste management.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-2xl mr-3">📈</span>
+                                <div>
+                                    <h4 class="font-bold text-lg">High Return on Investment</h4>
+                                    <p class="text-gray-700">Massively lower long-term cost compared to manual labor, freeing up municipal funds for other critical services.</p>
+                                </div>
+                            </li>
+                             <li class="flex items-start">
+                                <span class="text-2xl mr-3">🛠️</span>
+                                <div>
+                                    <h4 class="font-bold text-lg">"Make in India" Boost</h4>
+                                    <p class="text-gray-700">Spurs local innovation and manufacturing in robotics, creating new high-skill jobs in maintenance and fleet management.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-red-50 p-6 rounded-lg">
+                        <h3 class="text-2xl font-bold text-red-800 mb-4 text-center">Challenges</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <span class="text-2xl mr-3">☀️</span>
+                                <div>
+                                    <h4 class="font-bold text-lg">Harsh Environments</h4>
+                                    <p class="text-gray-700">Extreme sun, heavy monsoons, and pervasive dust can severely degrade sensor performance and damage electronics.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-2xl mr-3">🚧</span>
+                                <div>
+                                    <h4 class="font-bold text-lg">Dynamic Navigation</h4>
+                                    <p class="text-gray-700">Free-roaming navigation in unstructured terrain demands superior, real-time obstacle avoidance and localization that is robust to visual changes.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-2xl mr-3">👥</span>
+                                <div>
+                                    <h4 class="font-bold text-lg">Public Interaction</h4>
+                                    <p class="text-gray-700">The unpredictable path of a free-roaming robot increases the complexity of ensuring safe interactions in crowded public spaces.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="project-breakdown" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-[#1A535C] mb-6 text-center">Project Breakdown: Cost & Timeline</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-2xl font-bold text-[#1A535C] mb-4 text-center">Prototype Cost Breakdown</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white border">
+                                <thead class="bg-[#1A535C] text-white">
+                                    <tr>
+                                        <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Component</th>
+                                        <th class="text-right py-3 px-4 uppercase font-semibold text-sm">Est. Cost (INR)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-700">
+                                    <tr class="border-b">
+                                        <td class="py-3 px-4">Raspberry Pi 4 (4GB)</td>
+                                        <td class="py-3 px-4 text-right">₹4,500 - ₹5,500</td>
+                                    </tr>
+                                    <tr class="border-b bg-gray-50">
+                                        <td class="py-3 px-4">4WD Chassis Kit</td>
+                                        <td class="py-3 px-4 text-right">₹500 - ₹1,500</td>
+                                    </tr>
+                                    <tr class="border-b">
+                                        <td class="py-3 px-4">USB Webcam</td>
+                                        <td class="py-3 px-4 text-right">₹1,500 - ₹2,500</td>
+                                    </tr>
+                                    <tr class="border-b bg-gray-50">
+                                        <td class="py-3 px-4">Ultrasonic Sensors (x4)</td>
+                                        <td class="py-3 px-4 text-right">₹200 - ₹400</td>
+                                    </tr>
+                                    <tr class="border-b">
+                                        <td class="py-3 px-4">2-DOF Robotic Arm Kit</td>
+                                        <td class="py-3 px-4 text-right">₹1,800 - ₹3,000</td>
+                                    </tr>
+                                    <tr class="border-b bg-gray-50">
+                                        <td class="py-3 px-4">12V Li-ion Battery Pack</td>
+                                        <td class="py-3 px-4 text-right">₹1,500 - ₹2,500</td>
+                                    </tr>
+                                    <tr class="border-b">
+                                        <td class="py-3 px-4">IMU Sensor (Recommended)</td>
+                                        <td class="py-3 px-4 text-right">₹500 - ₹1,000</td>
+                                    </tr>
+                                    <tr class="border-b bg-gray-50">
+                                        <td class="py-3 px-4">Miscellaneous Parts</td>
+                                        <td class="py-3 px-4 text-right">₹1,000 - ₹2,000</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot class="font-bold bg-[#F7FFF7]">
+                                    <tr>
+                                        <td class="py-3 px-4 text-lg">Total Estimated Cost</td>
+                                        <td class="py-3 px-4 text-right text-lg text-green-700">₹11,500 - ₹18,400</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-[#1A535C] mb-4 text-center">Estimated Project Timeline</h3>
+                        <div class="relative pl-5 border-l-2 border-gray-300">
+                            <div class="mb-8 relative timeline-item">
+                                <h4 class="font-bold text-lg text-[#1A535C]">Phase 1: Foundation & Assembly</h4>
+                                <p class="text-sm font-semibold text-[#FF6B6B]">1-2 Weeks</p>
+                                <p class="text-gray-600 mt-1">Procurement, chassis/arm assembly, and basic motor control tests.</p>
+                            </div>
+                            <div class="mb-8 relative timeline-item">
+                                <h4 class="font-bold text-lg text-[#1A535C]">Phase 2: Perception System</h4>
+                                <p class="text-sm font-semibold text-[#FF6B6B]">2-3 Weeks</p>
+                                <p class="text-gray-600 mt-1">Fine-tuning YOLOv8 model, data augmentation, and testing detection accuracy.</p>
+                            </div>
+                            <div class="mb-8 relative timeline-item">
+                                <h4 class="font-bold text-lg text-[#1A535C]">Phase 3: Navigation & Control</h4>
+                                <p class="text-sm font-semibold text-[#FF6B6B]">4-6 Weeks</p>
+                                <p class="text-gray-600 mt-1">Implementing robust exploratory navigation and reactive obstacle avoidance.</p>
+                            </div>
+                             <div class="mb-8 relative timeline-item">
+                                <h4 class="font-bold text-lg text-[#1A535C]">Phase 4: Integration & Testing</h4>
+                                <p class="text-sm font-semibold text-[#FF6B6B]">2-3 Weeks</p>
+                                <p class="text-gray-600 mt-1">Combining all subsystems, developing the state machine, and field testing.</p>
+                            </div>
+                            <div class="relative timeline-item">
+                                <h4 class="font-bold text-lg text-[#1A535C]">Total Estimated Time</h4>
+                                <p class="text-sm font-semibold text-[#FF6B6B]">10-14 Weeks</p>
+                                <p class="text-gray-600 mt-1">From component unboxing to a functional field-tested prototype.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="challenges" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-[#1A535C] mb-6 text-center">Key Challenges & Future Directions</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-2xl font-bold text-[#FF6B6B] mb-3">Current Limitations</h3>
+                        <ul class="space-y-3 list-disc list-inside text-gray-700">
+                            <li><strong class="font-semibold">Environmental Adversity:</strong> Variable lighting, shadows, and rain severely impact vision-based perception and navigation.</li>
+                            <li><strong class="font-semibold">Feature-Poor Terrain:</strong> Open fields or sandy areas lack distinct features, causing Visual SLAM to fail and localization to drift.</li>
+                            <li><strong class="font-semibold">Perception-Speed Bottleneck:</strong> The Pi's CPU limits detection speed, forcing the rover to move slowly to be effective.</li>
+                            <li><strong class="font-semibold">Manipulation Accuracy:</strong> A simple 2-DOF arm has limited reach and dexterity, reducing grasp success rate.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-[#4ECDC4] mb-3">Future Research</h3>
+                        <ul class="space-y-3 list-disc list-inside text-gray-700">
+                            <li><strong class="font-semibold">Enhanced Sensing:</strong> Fusing vision with LiDAR or using stereo cameras would provide robust depth data, overcoming lighting issues.</li>
+                            <li><strong class="font-semibold">Swarm Intelligence:</strong> Deploying a team of simpler, coordinated rovers can clean large areas more efficiently than a single complex robot.</li>
+                            <li><strong class="font-semibold">Lifelong Learning:</strong> Developing systems that learn from experience in their environment to improve detection and grasping over time.</li>
+                            <li><strong class="font-semibold">Human-Robot Interaction:</strong> Creating intuitive interfaces for managing fleets of rovers and ensuring safe operation in public spaces.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center mt-12 py-6 border-t border-gray-300">
+            <p class="text-gray-600">Infographic based on the technical review "A Technical Review and Implementation Guide for Low-Cost Autonomous Litter Collection Rovers".</p>
+        </footer>
+    </div>
+
+    <script>
+        const vibrantPalette = {
+            darkGreen: '#1A535C',
+            turquoise: '#4ECDC4',
+            red: '#FF6B6B',
+            yellow: '#FFE66D',
+            lightGreen: '#F7FFF7',
+            gray: '#50514F'
+        };
+
+        function wrapLabel(str, maxWidth) {
+            if (str.length <= maxWidth) {
+                return str;
+            }
+            const words = str.split(' ');
+            let lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + word).length > maxWidth) {
+                    lines.push(currentLine.trim());
+                    currentLine = '';
+                }
+                currentLine += word + ' ';
+            }
+            lines.push(currentLine.trim());
+            return lines;
+        }
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            }
+            return label;
+        };
+        
+        const commonTooltipOptions = {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    }
+                }
+            }
+        };
+
+        const inferenceTimeData = {
+            labels: ['YOLOv4-tiny', 'SSD (InceptionV2)', 'YOLOv8n', 'SSD (MobileNetV2)', 'Faster R-CNN', 'YOLOv8s'],
+            datasets: [{
+                label: 'Inference Time (ms)',
+                data: [5.21, 1716, 1500, 2070, 2507, 2700],
+                backgroundColor: [
+                    vibrantPalette.turquoise,
+                    vibrantPalette.yellow,
+                    vibrantPalette.red,
+                    vibrantPalette.yellow,
+                    vibrantPalette.red,
+                    vibrantPalette.red,
+                ],
+                borderColor: vibrantPalette.darkGreen,
+                borderWidth: 2
+            }]
+        };
+
+        const inferenceTimeCtx = document.getElementById('inferenceTimeChart').getContext('2d');
+        new Chart(inferenceTimeCtx, {
+            type: 'bar',
+            data: inferenceTimeData,
+            options: {
+                ...commonTooltipOptions,
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Inference Time (ms) - Lower is Better',
+                            font: {
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    ...commonTooltipOptions.plugins,
+                    title: {
+                        display: true,
+                        text: 'Model Inference Speed on Raspberry Pi 4 (CPU)',
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        },
+                        padding: {
+                            top: 10,
+                            bottom: 20
+                        }
+                    },
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        const gripperData = {
+            labels: ['Adaptability', 'Cost', 'Simplicity', 'Precision', 'Robustness'],
+            datasets: [{
+                label: 'Rigid 2-Finger Pincer',
+                data: [2, 5, 5, 4, 3],
+                fill: true,
+                backgroundColor: 'rgba(255, 107, 107, 0.2)', // Red
+                borderColor: vibrantPalette.red,
+                pointBackgroundColor: vibrantPalette.red,
+            }, {
+                label: '3D-Printed Soft (Fin Ray)',
+                data: [5, 4, 4, 2, 5],
+                fill: true,
+                backgroundColor: 'rgba(78, 205, 196, 0.2)', // Turquoise
+                borderColor: vibrantPalette.turquoise,
+                pointBackgroundColor: vibrantPalette.turquoise,
+            },
+            {
+                label: 'Suction Gripper',
+                data: [1, 3, 4, 1, 2],
+                fill: true,
+                backgroundColor: 'rgba(255, 230, 109, 0.2)', // Yellow
+                borderColor: vibrantPalette.yellow,
+                pointBackgroundColor: vibrantPalette.yellow,
+            }]
+        };
+
+        const gripperCtx = document.getElementById('gripperComparisonChart').getContext('2d');
+        new Chart(gripperCtx, {
+            type: 'radar',
+            data: gripperData,
+            options: {
+                ...commonTooltipOptions,
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: {
+                            color: '#e2e8f0'
+                        },
+                        grid: {
+                            color: '#e2e8f0'
+                        },
+                        pointLabels: {
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            color: vibrantPalette.darkGreen
+                        },
+                        ticks: {
+                            backdropColor: 'white',
+                            stepSize: 1,
+                            max: 5,
+                            min: 0
+                        }
+                    }
+                },
+                plugins: {
+                    ...commonTooltipOptions.plugins,
+                    title: {
+                        display: true,
+                        text: 'Gripper Design Trade-offs for Litter Collection',
+                         font: {
+                            size: 16,
+                            weight: 'bold'
+                        },
+                        padding: {
+                            top: 10,
+                            bottom: 20
+                        }
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        const costBenefitData = {
+            labels: ['Rover Prototype Cost', 'Annual Manual Labor Cost'],
+            datasets: [{
+                label: 'Cost in INR (₹)',
+                data: [18400, 210000],
+                backgroundColor: [
+                    vibrantPalette.turquoise,
+                    vibrantPalette.red
+                ],
+                borderColor: vibrantPalette.darkGreen,
+                borderWidth: 2
+            }]
+        };
+
+        const costBenefitCtx = document.getElementById('costBenefitChart').getContext('2d');
+        new Chart(costBenefitCtx, {
+            type: 'bar',
+            data: costBenefitData,
+            options: {
+                ...commonTooltipOptions,
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '₹' + new Intl.NumberFormat('en-IN').format(value);
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Cost in INR (₹)',
+                            font: { weight: 'bold' }
+                        }
+                    }
+                },
+                plugins: {
+                    ...commonTooltipOptions.plugins,
+                    title: {
+                        display: true,
+                        text: 'Automation vs. Manual Labor Cost',
+                        font: { size: 16, weight: 'bold' },
+                        padding: { top: 10, bottom: 20 }
+                    },
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
