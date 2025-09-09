@@ -88,7 +88,7 @@
                     <div class="flex flex-col items-center p-4 bg-gray-50 rounded-lg w-full md:w-1/4">
                         <span class="text-4xl mb-2">👁️</span>
                         <h3 class="text-xl font-bold text-[#1A535C]">1. Perception</h3>
-                        <p class="text-gray-600 mt-1">Webcam + YOLOv8 detect litter. Ultrasonic sensors spot obstacles.</p>
+                        <p class="text-gray-600 mt-1">Intel RealSense for depth perception. YOLOv8 detects litter.</p>
                     </div>
                     <div class="flow-arrow hidden md:block">&rarr;</div>
                     <div class="flow-arrow block md:hidden">&darr;</div>
@@ -102,14 +102,14 @@
                     <div class="flex flex-col items-center p-4 bg-gray-50 rounded-lg w-full md:w-1/4">
                         <span class="text-4xl mb-2">🦾</span>
                         <h3 class="text-xl font-bold text-[#1A535C]">3. Manipulation</h3>
-                        <p class="text-gray-600 mt-1">A 2-DOF arm with a compliant gripper picks up and collects the trash.</p>
+                        <p class="text-gray-600 mt-1">A 4-DOF arm with a compliant gripper picks up and collects the trash.</p>
                     </div>
                 </div>
             </section>
             
             <!-- Section: Perception Performance -->
             <section id="perception-performance" class="bg-white rounded-lg shadow-md p-6 md:p-8">
-                <h2 class="text-3xl font-bold text-[#1A535C] mb-2 text-center">The Brains: Edge AI on Raspberry Pi 4</h2>
+                <h2 class="text-3xl font-bold text-[#1A535C] mb-2 text-center">The Brains: Edge AI on Raspberry Pi 5</h2>
                 <p class="text-lg text-center text-gray-600 max-w-3xl mx-auto mb-8">
                     The choice of a Raspberry Pi creates a "constraint cascade." The limited processing power forces a trade-off between the object detection model's accuracy and its speed, which directly impacts the rover's operational velocity.
                 </p>
@@ -117,7 +117,7 @@
                     <canvas id="inferenceTimeChart"></canvas>
                 </div>
                 <p class="text-center text-gray-600 mt-4">
-                    This chart compares the inference time of different object detection models on a Raspberry Pi without a hardware accelerator. Lower is better. YOLOv8n offers a modern balance, but its speed (~1-2 FPS) limits the rover's physical speed, highlighting the need for optimization or a hardware accelerator like a Google Coral TPU.
+                    This chart compares the inference time of different object detection models on a Raspberry Pi without a hardware accelerator. Lower is better. While RPi 5 is faster, YOLOv8n's speed still limits the rover's physical speed, highlighting the need for optimization or a hardware accelerator like a Google Coral TPU.
                 </p>
             </section>
 
@@ -164,7 +164,7 @@
                     </div>
                 </div>
                  <p class="text-center text-gray-600 mt-6">
-                    The logic is simple: wander the area using ultrasonic sensors to avoid walls. When the camera sees litter, the wander behavior is interrupted. The A* algorithm then computes an optimal, direct path to the target. After collection, the rover resumes its exploratory wandering.
+                    The logic is simple: wander the area using sensor data to avoid walls. When the camera sees litter, the wander behavior is interrupted. The A* algorithm then computes an optimal, direct path to the target. After collection, the rover resumes its exploratory wandering.
                 </p>
             </section>
 
@@ -178,7 +178,7 @@
                     <canvas id="costBenefitChart"></canvas>
                 </div>
                 <p class="text-center text-gray-600 mt-4">
-                    A single rover prototype can be built for less than one month's salary of a manual sanitation worker in India. A fleet of such rovers, operating 24/7, offers a compelling long-term economic advantage for municipalities and private campuses.
+                    A single rover prototype can be built for less than three months' salary of a manual sanitation worker in India. A fleet of such rovers, operating 24/7, offers a compelling long-term economic advantage for municipalities and private campuses.
                 </p>
             </section>
 
@@ -256,11 +256,11 @@
                                     </tr>
                                 </thead>
                                 <tbody class="text-gray-700">
-                                    <tr class="border-b"><td class="py-3 px-4">Raspberry Pi 4 (4GB)</td><td class="py-3 px-4 text-right">₹4,500 - ₹5,500</td></tr>
+                                    <tr class="border-b"><td class="py-3 px-4">Raspberry Pi 5 (8GB)</td><td class="py-3 px-4 text-right">₹8,000 - ₹10,000</td></tr>
                                     <tr class="border-b bg-gray-50"><td class="py-3 px-4">4WD Chassis Kit</td><td class="py-3 px-4 text-right">₹500 - ₹1,500</td></tr>
-                                    <tr class="border-b"><td class="py-3 px-4">USB Webcam</td><td class="py-3 px-4 text-right">₹1,500 - ₹2,500</td></tr>
+                                    <tr class="border-b"><td class="py-3 px-4">Intel RealSense Depth Camera</td><td class="py-3 px-4 text-right">₹18,000 - ₹25,000</td></tr>
                                     <tr class="border-b bg-gray-50"><td class="py-3 px-4">Ultrasonic Sensors (x4)</td><td class="py-3 px-4 text-right">₹200 - ₹400</td></tr>
-                                    <tr class="border-b"><td class="py-3 px-4">2-DOF Robotic Arm Kit</td><td class="py-3 px-4 text-right">₹1,800 - ₹3,000</td></tr>
+                                    <tr class="border-b"><td class="py-3 px-4">4-DOF Robotic Arm Kit</td><td class="py-3 px-4 text-right">₹4,000 - ₹6,000</td></tr>
                                     <tr class="border-b bg-gray-50"><td class="py-3 px-4">12V Li-ion Battery Pack</td><td class="py-3 px-4 text-right">₹1,500 - ₹2,500</td></tr>
                                     <tr class="border-b"><td class="py-3 px-4">IMU Sensor (Recommended)</td><td class="py-3 px-4 text-right">₹500 - ₹1,000</td></tr>
                                     <tr class="border-b bg-gray-50"><td class="py-3 px-4">Miscellaneous Parts</td><td class="py-3 px-4 text-right">₹1,000 - ₹2,000</td></tr>
@@ -268,7 +268,7 @@
                                 <tfoot class="font-bold bg-[#F7FFF7]">
                                     <tr>
                                         <td class="py-3 px-4 text-lg">Total Estimated Cost</td>
-                                        <td class="py-3 px-4 text-right text-lg text-green-700">₹11,500 - ₹18,400</td>
+                                        <td class="py-3 px-4 text-right text-lg text-green-700">₹33,700 - ₹48,400</td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -317,13 +317,13 @@
                             <li><strong class="font-semibold">Environmental Adversity:</strong> Variable lighting, shadows, and rain severely impact vision-based perception and navigation.</li>
                             <li><strong class="font-semibold">Feature-Poor Terrain:</strong> Open fields or sandy areas lack distinct features, causing Visual SLAM to fail and localization to drift.</li>
                             <li><strong class="font-semibold">Perception-Speed Bottleneck:</strong> The Pi's CPU limits detection speed, forcing the rover to move slowly to be effective.</li>
-                            <li><strong class="font-semibold">Manipulation Accuracy:</strong> A simple 2-DOF arm has limited reach and dexterity, reducing grasp success rate.</li>
+                            <li><strong class="font-semibold">Manipulation Complexity:</strong> A 4-DOF arm offers greater dexterity but requires more complex inverse kinematics for precise control.</li>
                         </ul>
                     </div>
                     <div>
                         <h3 class="text-2xl font-bold text-[#4ECDC4] mb-3">Future Research</h3>
                         <ul class="space-y-3 list-disc list-inside text-gray-700">
-                            <li><strong class="font-semibold">Enhanced Sensing:</strong> Fusing vision with LiDAR or using stereo cameras would provide robust depth data, overcoming lighting issues.</li>
+                            <li><strong class="font-semibold">Sensor Fusion:</strong> Fusing RealSense depth data with IMU and wheel odometry for more robust localization and mapping (SLAM).</li>
                             <li><strong class="font-semibold">Swarm Intelligence:</strong> Deploying a team of simpler, coordinated rovers can clean large areas more efficiently than a single complex robot.</li>
                             <li><strong class="font-semibold">Lifelong Learning:</strong> Developing systems that learn from experience in their environment to improve detection and grasping over time.</li>
                             <li><strong class="font-semibold">Human-Robot Interaction:</strong> Creating intuitive interfaces for managing fleets of rovers and ensuring safe operation in public spaces.</li>
@@ -433,7 +433,7 @@
                         ...commonTooltipOptions.plugins,
                         title: {
                             display: true,
-                            text: 'Model Inference Speed on Raspberry Pi 4 (CPU)',
+                            text: 'Model Inference Speed on Raspberry Pi (CPU)',
                             font: { size: 16, weight: 'bold' },
                             padding: { top: 10, bottom: 20 }
                         },
@@ -516,7 +516,7 @@
                 labels: ['Rover Prototype Cost', 'Annual Manual Labor Cost'],
                 datasets: [{
                     label: 'Cost in INR (₹)',
-                    data: [18400, 210000],
+                    data: [48400, 210000],
                     backgroundColor: [
                         vibrantPalette.turquoise,
                         vibrantPalette.red
